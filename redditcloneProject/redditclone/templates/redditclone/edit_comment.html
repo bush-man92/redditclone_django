@@ -1,0 +1,27 @@
+{% extends "redditclone/base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center align-content-center">
+          <form class="form" method="post" action="{% url 'edit_comment' comment_id %}">
+          {% csrf_token %}
+          {% if parent_comment %}
+            <h3 class="title">{{parent_comment.user_name}} commented:</h3>
+            <h6 class="comment">{{parent_comment.comment}}</h6>
+          {% endif %}
+          <div class="form-group">
+            {{form.comment.label_tag}}<br>
+            {{form.comment}}<br>
+            {{form.errors.comment}}
+          </div>
+          <div class="d-flex justify-content-center">
+            <input type="submit" class="btn-primary" name="Edit" value="Edit">
+            <input style="margin-left: 10px;" type="submit" class="btn-primary" name="Cancel" value="Cancel">
+            <input type="hidden" name="comment_id" value={{comment_id}}>
+          </div>
+          </form>
+    </div>
+  </div>
+
+{% endblock %}

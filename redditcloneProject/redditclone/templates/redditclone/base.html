@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'redditclone/redditclone.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <title>RedditClone</title>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-sm bg-light">
+      <!-- Links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a href="{% url 'registration' %}">Register Here</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a href="{% url 'logout' %}">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a href="{% url 'login' %}">Login</a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a href="{% url 'home' %}">Home</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a href="{% url 'create_tread' %}">Start a new tread</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <p>Login to start a tread</p>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </body>
+  <script>
+    $(document).ready(function() {
+      $(".reply_form").hide()
+      $('.reply_button').click(function() { 
+        var text = $(this).attr('value');
+        $(".reply_form").hide()
+        $("#" + text).show()
+      }); 
+    }); 
+    </script>
+</html>
+
+{% block content %}
+{% endblock %}

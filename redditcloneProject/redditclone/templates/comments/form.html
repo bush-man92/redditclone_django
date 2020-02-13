@@ -1,0 +1,42 @@
+{% load comments i18n %}
+{% load widget_tweaks %}
+
+{% if node.id and user.is_authenticated %}
+<div class="container">
+    <div class="row justify-content-center">
+        <form collapse class="reply_form" id={{node.id}} action="{% comment_form_target %}" method="post">{% csrf_token %}
+            {{ form.object_pk }}
+            {{ form.content_type }}
+            {{ form.timestamp }}
+            {{ form.security_hash }}
+            {% if node.id %}    
+                <input type="hidden" name="parent" id="parent_id" value="{{ node.id }}" />
+            {% endif %}
+            {{form.comment|attr:"cols:50"|attr:"rows:4"}}
+            <div class="d-flex justify-content-center" id="lower_comment_button">
+                <input type="hidden" name="next" value="{{ request.path }}" />
+                <input type="submit" class="btn-primary" value="Comment">
+            </div>
+        </form>
+    </div>
+</div>
+{% elif user.is_authenticated %}
+<div class="container">
+    <div class="row justify-content-center">
+        <form id={{node.id}} action="{% comment_form_target %}" method="post">{% csrf_token %}
+            {{ form.object_pk }}
+            {{ form.content_type }}
+            {{ form.timestamp }}
+            {{ form.security_hash }}
+            {% if node.id %}    
+                <input type="hidden" name="parent" id="parent_id" value="{{ node.id }}" />
+            {% endif %}
+            {{form.comment|attr:"cols:50"|attr:"rows:4"}}<br>
+            <div class="d-flex justify-content-center" id="lower_comment_button">
+                <input type="hidden" name="next" value="{{ request.path }}" />
+                <input type="submit" class="btn-primary" value="Comment">
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}

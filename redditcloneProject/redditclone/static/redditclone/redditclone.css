@@ -1,0 +1,41 @@
+.nav-item {
+    padding: 10px;
+}
+
+.title {
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.description {
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.list-group-item {
+    text-align: center;
+    background-color: aliceblue;
+}
+
+.comment {
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.card {
+    margin-bottom: 10px;
+}
+
+.children {
+    padding-left: 50px;
+    padding-top: 10px;
+}
+
+#id_comment {
+    margin-top: 10px;
+    padding-bottom: 10px;
+}
+
+#lower_comment_button {
+    padding-bottom: 40px;
+}

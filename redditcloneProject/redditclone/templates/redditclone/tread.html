@@ -1,0 +1,75 @@
+{% extends "redditclone/base.html" %}
+
+{% block content %}
+
+<div class="container">
+{% for tread in tread %}
+    <h1 class="title">{{tread.title}}</h1>
+    {% if tread.comment %}
+        <p class="description">{{tread.comment}}</p>
+    {% else %}
+        <p class="description">No description</p>
+    {% endif %}
+    {% load comments %}
+    {% load mptt_tags %}
+
+
+    {% get_comment_list for tread as comments %}
+    {% if comments %}
+    {% recursetree comments %}
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <p class="text-secondary text-center">{{node.submit_date|timesince}} ago</p>
+                </div>
+                <div class="col-md-8">
+                    <p class="comment"><strong>{{node.user.username}}</strong></p>
+                    <p class="comment">{{node.comment}}</p>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-2">
+                    <strong><p>votes {{node.votes}}</p></strong>
+                    <button type="button" value="{{node.id}}" class="reply_button btn-primary"><i class="fa fa-reply"></i>Reply</button>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                {% if user.is_authenticated %}
+                    {% render_comment_form for tread %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center">
+        <form method="post" action="{% url 'tread' tread.id %}">
+            {% csrf_token %}
+            <input type="hidden" class="btn-primary" name="comment_id" value="{{node.id}}">
+            {% if user.is_authenticated %}
+                <input type="submit" class="btn-primary" value="Upvote" name="Upvote">
+                <input type="submit" class="btn-primary" value="Downvote" name="Downvote">
+            {% endif %}
+            {% if user.is_superuser or node.user.username == request.user.username %}
+                <input type="submit" class="btn-primary" value="Delete" name="Delete">
+                <input type="submit" class="btn-primary" value="Edit" name="Edit">
+            {% endif %}
+        </form>
+    </div>
+
+        {% if not node.is_leaf_node %}
+            <ul class="children">
+                {{ children }}
+            </ul>
+        {% endif %}
+    {% endrecursetree %}
+    {% else %}
+    <strong><p class="title">Be first to comment</p></strong>
+    {% endif %}
+    {% if user.is_authenticated %}
+        {% render_comment_form for tread %}
+    {% else %}
+        <strong><h3 class="comment">Login to comment</h3></strong>
+    {% endif %}
+{% endfor %}
+</div>
+
+{% endblock %}

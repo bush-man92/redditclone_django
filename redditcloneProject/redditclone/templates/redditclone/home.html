@@ -1,0 +1,19 @@
+{% extends "redditclone/base.html" %}
+
+{% block content %}
+
+<h1 class="title">Available treads</h1>
+<div class="container">
+<div class="list-group">
+{% for tread in treads %}
+    <a href="{% url 'tread' tread.id %}" class="list-group-item list-group-item-action">{{tread.title}}</a>
+    {% if tread.comment %}
+        <p class="description">{{tread.comment}}</p>
+    {% else %}
+        <p class="description">No description</p>
+    {% endif %}
+{% endfor %}
+</div>
+</div>
+
+{% endblock %}
