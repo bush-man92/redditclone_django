@@ -79,17 +79,20 @@ class treadView(View):
     def post(self, request, tread_id):
         tread = Tread.objects.filter(id=tread_id)
         context = {'tread' : tread}
-        comment_id = self.request.POST['comment_id']
-        comment = MPTTComment.objects.filter(id=comment_id)
-        if (self.request.user.id == comment[0].user_id or self.request.user.is_superuser) and 'Delete' in request.POST:
-            MPTTComment.objects.filter(id=comment_id).delete()
-        if (self.request.user.id == comment[0].user_id or self.request.user.is_superuser) and 'Edit' in request.POST:
-            return redirect('edit_comment', comment_id)
-        if self.request.user.username and 'Upvote' in request.POST:
-            upvote = MPTTComment.objects.filter(id=comment_id).update(votes=comment[0].votes + 1)
-            return render(self.request, self.template_name, context)
-        if self.request.user.username and 'Downvote' in request.POST:
-            downvote = MPTTComment.objects.filter(id=comment_id).update(votes=comment[0].votes - 1)
+        try:
+            comment_id = self.request.POST['comment_id']
+            comment = MPTTComment.objects.filter(id=comment_id)
+            if (self.request.user.id == comment[0].user_id or self.request.user.is_superuser) and 'Delete' in request.POST:
+                MPTTComment.objects.filter(id=comment_id).delete()
+            if (self.request.user.id == comment[0].user_id or self.request.user.is_superuser) and 'Edit' in request.POST:
+                return redirect('edit_comment', comment_id)
+            if self.request.user.username and 'Upvote' in request.POST:
+                upvote = MPTTComment.objects.filter(id=comment_id).update(votes=comment[0].votes + 1)
+                return render(self.request, self.template_name, context)
+            if self.request.user.username and 'Downvote' in request.POST:
+                downvote = MPTTComment.objects.filter(id=comment_id).update(votes=comment[0].votes - 1)
+                return render(self.request, self.template_name, context)
+        except:
             return render(self.request, self.template_name, context)
 
 

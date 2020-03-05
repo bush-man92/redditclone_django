@@ -23,7 +23,7 @@
 {% elif user.is_authenticated %}
 <div class="container">
     <div class="row justify-content-center">
-        <form id={{node.id}} action="{% comment_form_target %}" method="post">{% csrf_token %}
+        <form action="{% comment_form_target %}" method="post">{% csrf_token %}
             {{ form.object_pk }}
             {{ form.content_type }}
             {{ form.timestamp }}
