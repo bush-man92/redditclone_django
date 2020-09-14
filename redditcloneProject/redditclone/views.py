@@ -12,7 +12,51 @@ from .forms import RegistrationForm, LoginForm, TreadForm, EditComment
 
 # Create your views here.
 
-class registrationView(FormView):
+class home(ListView):
+    template_name = 'redditclone/home.html'
+    queryset = Tread.objects.all()
+    object_list = queryset
+    context_object_name = 'treads'
+
+class treadCreate(FormView, LoginRequiredMixin):
+    template_name = 'redditclone/tread_create.html'
+    form_class = TreadForm
+    success_url = 'home'
+
+    def form_valid(self, form):
+        title = form.cleaned_data.get('title')
+        comment = form.cleaned_data.get('comment')
+        tread = Tread.objects.create(title=title, comment=comment, user_id=self.request.user.id)
+        return redirect(self.success_url)
+
+class tread(View):
+    template_name = 'redditclone/tread.html'
+
+    def get(self, request, tread_id):
+        tread = Tread.objects.filter(id=tread_id)
+        context = {'tread' : tread}
+        return render(self.request, self.template_name, context)
+
+    def post(self, request, tread_id):
+        tread = Tread.objects.filter(id=tread_id)
+        context = {'tread' : tread}
+        try:
+            comment_id = self.request.POST['comment_id']
+            comment = MPTTComment.objects.filter(id=comment_id)
+            if (self.request.user.id == comment[0].user_id or self.request.user.is_superuser) and 'Delete' in request.POST:
+                MPTTComment.objects.filter(id=comment_id).delete()
+            if (self.request.user.id == comment[0].user_id or self.request.user.is_superuser) and 'Edit' in request.POST:
+                return redirect('edit_comment', comment_id)
+            if self.request.user.username and 'Upvote' in request.POST:
+                upvote = MPTTComment.objects.filter(id=comment_id).update(votes=comment[0].votes + 1)
+                return render(self.request, self.template_name, context)
+            if self.request.user.username and 'Downvote' in request.POST:
+                downvote = MPTTComment.objects.filter(id=comment_id).update(votes=comment[0].votes - 1)
+                return render(self.request, self.template_name, context)
+        except:
+            return render(self.request, self.template_name, context)
+
+class registration(FormView):
     template_name = 'redditclone/registration.html'
     form_class = RegistrationForm
     success_url = 'home'
@@ -22,7 +66,7 @@ class registrationView(FormView):
         login(self.request, form.save())
         return redirect(self.success_url)
 
-class loginView(FormView):
+class login(FormView):
     template_name = 'redditclone/login.html'
     form_class = LoginForm
     success_url = 'home'
@@ -50,54 +94,8 @@ class loginView(FormView):
                 form.add_error('password', 'Wrong password')
                 return render(self.request, self.template_name, context)
 
-class homeView(ListView):
-    template_name = 'redditclone/home.html'
-    queryset = Tread.objects.all()
-    object_list = queryset
-    context_object_name = 'treads'
-    paginate_by = 10
-
-class treadCreateView(FormView, LoginRequiredMixin):
-    template_name = 'redditclone/tread_form.html'
-    form_class = TreadForm
-    success_url = 'home'
-
-    def form_valid(self, form):
-        title = form.cleaned_data.get('title')
-        comment = form.cleaned_data.get('comment')
-        tread = Tread.objects.create(title=title, comment=comment, user_id=self.request.user.id)
-        return redirect(self.success_url)
-
-class treadView(View):
-    template_name = 'redditclone/tread.html'
-
-    def get(self, request, tread_id):
-        tread = Tread.objects.filter(id=tread_id)
-        context = {'tread' : tread}
-        return render(self.request, self.template_name, context)
-
-    def post(self, request, tread_id):
-        tread = Tread.objects.filter(id=tread_id)
-        context = {'tread' : tread}
-        try:
-            comment_id = self.request.POST['comment_id']
-            comment = MPTTComment.objects.filter(id=comment_id)
-            if (self.request.user.id == comment[0].user_id or self.request.user.is_superuser) and 'Delete' in request.POST:
-                MPTTComment.objects.filter(id=comment_id).delete()
-            if (self.request.user.id == comment[0].user_id or self.request.user.is_superuser) and 'Edit' in request.POST:
-                return redirect('edit_comment', comment_id)
-            if self.request.user.username and 'Upvote' in request.POST:
-                upvote = MPTTComment.objects.filter(id=comment_id).update(votes=comment[0].votes + 1)
-                return render(self.request, self.template_name, context)
-            if self.request.user.username and 'Downvote' in request.POST:
-                downvote = MPTTComment.objects.filter(id=comment_id).update(votes=comment[0].votes - 1)
-                return render(self.request, self.template_name, context)
-        except:
-            return render(self.request, self.template_name, context)
-
-
-class editCommentView(FormView, LoginRequiredMixin):
-    template_name = 'redditclone/edit_comment.html'
+class edit(FormView, LoginRequiredMixin):
+    template_name = 'redditclone/edit.html'
     form_class = EditComment
 
     def get(self, request, comment_id):
@@ -127,7 +125,7 @@ class editCommentView(FormView, LoginRequiredMixin):
             return redirect('tread', tread_id=tread_id[0].object_pk)
 
 
-class logoutView(View, LoginRequiredMixin):
+class logout(View, LoginRequiredMixin):
     template_name = 'redditclone/logout.html'
 
     def get(self, request):
