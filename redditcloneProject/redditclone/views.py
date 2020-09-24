@@ -66,7 +66,7 @@ class registration(FormView):
         login(self.request, form.save())
         return redirect(self.success_url)
 
-class login(FormView):
+class loginView(FormView):
     template_name = 'redditclone/login.html'
     form_class = LoginForm
     success_url = 'home'
@@ -125,7 +125,7 @@ class edit(FormView, LoginRequiredMixin):
             return redirect('tread', tread_id=tread_id[0].object_pk)
 
 
-class logout(View, LoginRequiredMixin):
+class logoutView(View, LoginRequiredMixin):
     template_name = 'redditclone/logout.html'
 
     def get(self, request):

@@ -2,14 +2,16 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container" id="tread-container">
 {% for tread in tread %}
-    <h1 class="title">{{tread.title}}</h1>
-    {% if tread.comment %}
-        <p class="description">{{tread.comment}}</p>
-    {% else %}
-        <p class="description">No description</p>
-    {% endif %}
+    <div id="title">
+        <h1 class="title">{{tread.title}}</h1>
+        {% if tread.comment %}
+            <p class="description">{{tread.comment}}</p>
+        {% else %}
+            <p class="description">No description</p>
+        {% endif %}
+    </div>
     {% load comments %}
     {% load mptt_tags %}
 
@@ -29,9 +31,11 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-md-2">
-                    <strong><p>votes {{node.votes}}</p></strong>
-                    <button type="button" value="{{node.id}}" class="reply_button btn-primary"><i class="fa fa-reply"></i>Reply</button>
+                    <button type="button" value="{{node.id}}" class="reply_button">Reply</button>
                 </div>
+            </div>
+            <div class="row" id="votes">
+                <strong><p>VOTES {{node.votes}}</p></strong>
             </div>
             <div class="row d-flex justify-content-center">
                 {% if user.is_authenticated %}
@@ -45,12 +49,12 @@
             {% csrf_token %}
             <input type="hidden" class="btn-primary" name="comment_id" value="{{node.id}}">
             {% if user.is_authenticated %}
-                <input type="submit" class="btn-primary" value="Upvote" name="Upvote">
-                <input type="submit" class="btn-primary" value="Downvote" name="Downvote">
+                <button><input type="submit" class="btn" value="Upvote" name="Upvote"></button>
+                <button><input type="submit" class="btn" value="Downvote" name="Downvote"></button>
             {% endif %}
             {% if user.is_superuser or node.user.username == request.user.username %}
-                <input type="submit" class="btn-primary" value="Delete" name="Delete">
-                <input type="submit" class="btn-primary" value="Edit" name="Edit">
+                <button><input type="submit" class="btn" value="Delete" name="Delete"></button>
+                <button><input type="submit" class="btn" value="Edit" name="Edit"></button>
             {% endif %}
         </form>
     </div>

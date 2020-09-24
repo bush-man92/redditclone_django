@@ -15,7 +15,7 @@
             {{form.comment|attr:"cols:50"|attr:"rows:4"}}
             <div class="d-flex justify-content-center" id="lower_comment_button">
                 <input type="hidden" name="next" value="{{ request.path }}" />
-                <input type="submit" class="btn-primary" value="Comment">
+                <button><input type="submit" class="btn" value="Comment"></button>
             </div>
         </form>
     </div>
@@ -34,7 +34,7 @@
             {{form.comment|attr:"cols:50"|attr:"rows:4"}}<br>
             <div class="d-flex justify-content-center" id="lower_comment_button">
                 <input type="hidden" name="next" value="{{ request.path }}" />
-                <input type="submit" class="btn-primary" value="Comment">
+                <button><input type="submit" class="btn" value="Comment"></button>
             </div>
         </form>
     </div>
